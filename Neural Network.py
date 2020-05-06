@@ -3,8 +3,6 @@
 """
 
 import math
-from builtins import int
-
 
 class NeuralNetwork:
     def __init__(self, amount):
