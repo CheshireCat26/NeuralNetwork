@@ -4,6 +4,7 @@
 
 import math
 
+
 class NeuralNetwork:
     def __init__(self, amount):
         """
@@ -56,19 +57,19 @@ class NeuralNetwork:
 
         return amount
 
-    def set_weights(self, weights):
+    def set_weights(self, m_weights):
         """
 
-        :param weights: iterable
+        :param m_weights: iterable
         :return:
         """
 
         indent = 0
         for hid_l in self.__hidden_layers:
-            hid_l.set_weights(weights[indent:(indent + hid_l.amount_weights())])
+            hid_l.set_weights(m_weights[indent:(indent + hid_l.amount_weights())])
             indent += hid_l.amount_weights()
 
-        self.__output_layer.set_weights(weights[indent:])
+        self.__output_layer.set_weights(m_weights[indent:])
 
     def get_output(self, m_input):
         """
@@ -106,20 +107,20 @@ class Layer:
 
         return self.__a_weights
 
-    def set_weights(self, weights):
+    def set_weights(self, m_weights):
         """
         set weights to neuron in the layer
 
-        :param weights: len(weights) must be equal to self.a_weights
+        :param m_weights: len(weights) must be equal to self.a_weights
         :return:
         """
 
-        if len(weights) != self.__a_weights:
+        if len(m_weights) != self.__a_weights:
             raise RuntimeError("len(weights) != self.a_weights")
 
         intent = 0
         for neuron in self.__neurons:
-            neuron.set_weights(weights[intent:(intent + neuron.size())])
+            neuron.set_weights(m_weights[intent:(intent + neuron.size())])
             intent += neuron.size()
 
     def get_output(self, m_input):
