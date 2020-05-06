@@ -12,7 +12,7 @@ NN.add_output_layer(amount). "Add output layer. amount - number of neurons in th
 
 "Here you can't add more hidden layers"
 
-"You can't change NN dynimically"
+"You can't change NN dynamically"
 
 NN.set_weights(weights) "Set all weights in NN. len(weights) must be == NN.amount_weights(). weights = value of all weights in NN"
 
