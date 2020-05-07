@@ -12,7 +12,7 @@ class NeuralNetwork:
         :param amount: amount of inputs
         """
 
-        self.__size_input_layer = amount
+        self.__size_input_layer = amount + 1
         self.__hidden_layers = []
         self.__output_layer = None
 
@@ -27,10 +27,10 @@ class NeuralNetwork:
             raise RuntimeError("After output_layer can't add more layers")
 
         if len(self.__hidden_layers) == 0:
-            self.__hidden_layers.append(Layer(size, self.__size_input_layer))
+            self.__hidden_layers.append(Layer(size, self.__size_input_layer, True))
         else:
             self.__hidden_layers.append(Layer(size,
-                                              self.__hidden_layers[len(self.__hidden_layers) - 1].size()))
+                                              self.__hidden_layers[len(self.__hidden_layers) - 1].size(), True))
 
     def add_output_layer(self, size):
         """
@@ -82,7 +82,9 @@ class NeuralNetwork:
         answer = 0
         for i, hid_l in enumerate(self.__hidden_layers):
             if i == 0:
-                answer = hid_l.get_output(m_input)
+                copy = m_input.copy()
+                copy.append(1)  # Crutch for bias
+                answer = hid_l.get_output(copy)
             else:
                 answer = hid_l.get_output(answer)
 
@@ -90,7 +92,7 @@ class NeuralNetwork:
 
 
 class Layer:
-    def __init__(self, size, input_size):
+    def __init__(self, size, input_size, bias=False):
         """
 
         :param size: number of neuron
@@ -98,7 +100,10 @@ class Layer:
         """
 
         self.__neurons = [Neuron(input_size) for _ in range(size)]
-        self.__a_weights = size * input_size
+        self.__a_weights = (size * input_size)
+        if bias:
+            self.__neurons.append(Neuron(input_size, True))
+            self.__a_weights += input_size  # bias
 
     def amount_weights(self):
         """
@@ -146,7 +151,7 @@ class Layer:
 
 
 class Neuron:
-    def __init__(self, size):
+    def __init__(self, size, bias=False):
         """
 
         :param size: amount of inputs
@@ -154,6 +159,7 @@ class Neuron:
 
         self.__weight = []
         self.__input_size = size
+        self.__bias = bias
 
     def set_weights(self, f_weights):
         """
@@ -186,15 +192,18 @@ class Neuron:
         if len(f_input) != self.__input_size:
             raise RuntimeError("len(input)  != self.size()")
 
+        if self.__bias:
+            return 1
+
         x = sum([v * w for v, w in zip(f_input, self.__weight)])
         return math.exp(x) / (math.exp(x) + 1)
 
 
 if __name__ == "__main__":
     NN = NeuralNetwork(2)
-    NN.add_hidden_layer(100)
+    NN.add_hidden_layer(2)
     NN.add_output_layer(1)
     weights = [0.01 for i in range(NN.amount_weights())]
     NN.set_weights(weights)
 
-    print(NN.get_output([1, 1]))
+    print(NN.get_output([0, 0]))
