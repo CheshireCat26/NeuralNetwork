@@ -1,3 +1,6 @@
+
+
+
 My implementation of feed forward neural network
 
 How to use:
