@@ -1,4 +1,4 @@
-!!!Don't work!!!
+
 
 
 My implementation of feed forward neural network
