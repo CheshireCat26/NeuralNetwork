@@ -2,7 +2,7 @@
     This document implement feed forward NN
 """
 
-import math
+import numpy
 
 
 class NeuralNetwork:
@@ -103,7 +103,6 @@ class Layer:
         self.__a_weights = (size * input_size)
         if bias:
             self.__neurons.append(Neuron(input_size, True))
-            self.__a_weights += input_size  # bias
 
     def amount_weights(self):
         """
@@ -125,6 +124,8 @@ class Layer:
 
         intent = 0
         for neuron in self.__neurons:
+            if neuron.is_bias():
+                break
             neuron.set_weights(m_weights[intent:(intent + neuron.size())])
             intent += neuron.size()
 
@@ -196,7 +197,15 @@ class Neuron:
             return 1
 
         x = sum([v * w for v, w in zip(f_input, self.__weight)])
-        return math.exp(x) / (math.exp(x) + 1)
+        x = sigmoid(x)
+        return x
+
+    def is_bias(self):
+        return self.__bias
+
+
+def sigmoid(x):
+    return 1 / (1 + numpy.exp(-x))
 
 
 if __name__ == "__main__":
